@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/item1" android:visible="true" android:showAsAction="always" android:titleCondensed="Back" android:title="Back To Previous Image" android:checked="true"></item>
+    <item android:id="@+id/item2" android:visible="true" android:title="Save" android:checked="true" android:showAsAction="ifRoom"></item>
+     <item android:id="@+id/item3" android:visible="true" android:title="HUD" ></item>
+    
+  
+    
+
+</menu>
