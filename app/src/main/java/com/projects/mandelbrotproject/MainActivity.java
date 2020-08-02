@@ -1,10 +1,25 @@
 package com.projects.mandelbrotproject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import com.projects.mandelbrotproject.R;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.*;
 
@@ -26,14 +41,18 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.Color;
 
+import static android.support.v4.content.FileProvider.getUriForFile;
+
 
 public class MainActivity extends Activity {
 
 	View theInflatedView;
 	public boolean menuOpen = false;
 	private Menu menu = null;
-	  private ProgressDialog pd = null;
-	    private Object data = null;
+	private ProgressDialog pd = null;
+	private Object data = null;
+    private mandView mv;
+
     @TargetApi(11)
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,18 +60,18 @@ public class MainActivity extends Activity {
        // requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
    //  View iv = (View) findViewById(R.id.imageV);
        
-    setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
       // LayoutInflater inflater = LayoutInflater.from(MainActivity.this); // 1
      //  theInflatedView = inflater.inflate(R.layout.activity_main, null);
      //  setContentView(theInflatedView);
-       mandView mv=(mandView)findViewById(R.id.mv);
+       mv=(mandView)findViewById(R.id.mv);
      
        TextView tv=(TextView)this.findViewById(R.id.textView1);
        ProgressBar progressBar=(ProgressBar)this.findViewById(R.id.progressBar);
        mv.setTextBox(tv);
        mv.setProgressBar(progressBar);
        mv.setMenu(menu);
-       
+
        this.pd = ProgressDialog.show(this, "Working..", "Downloading Data...", true, false);
 
        // Start a new thread that will download all the data
@@ -80,6 +99,7 @@ public class MainActivity extends Activity {
        setContentView(mv);*/
     }
     
+    @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     private class DownloadTask extends AsyncTask<String, Void, Object> {
        
     	protected Object doInBackground(String... args) {
@@ -161,9 +181,9 @@ public class MainActivity extends Activity {
         	}
         case R.id.item2:
         	{
-        		mandView mv=(mandView)this.findViewById(R.id.mv);
+        		//mandView mv=(mandView)this.findViewById(R.id.mv);
         		
-        		mv.save();
+        		save();
         		
 
         		Toast msg = Toast.makeText(this, "This image has been saved.", Toast.LENGTH_SHORT);
@@ -182,9 +202,109 @@ public class MainActivity extends Activity {
         }
         return false;
     }
-    
-    
-//}
+
+
+    public void save()
+    {
+        mv=(mandView)findViewById(R.id.mv);
+        if(!mv.clicked)
+        {
+            boolean createdFile=false;
+            int REQUEST_CODE = 1;
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_GRANTED) {
+                exportToFile(mv);
+            } //else if (shouldShowRequestPermissionRationale()) {
+            // In an educational UI, explain to the user why your app requires this
+            // permission for a specific feature to behave as expected. In this UI,
+            // include a "cancel" or "no thanks" button that allows the user to
+            // continue using your app without granting the permission.
+            //showInContextUI(...);
+            //}
+            else {
+                // You can directly ask for the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                        REQUEST_CODE);
+
+
+            }
+
+        }
+    }
+
+    private boolean exportToFile(mandView mv) {
+        try
+        {
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            //get current date time with Date()
+            Date date = new Date();
+            System.out.println(dateFormat.format(date));
+            //Random randomGenerator = new Random();
+            //int randomInt = randomGenerator.nextInt(100);
+            String fileName="mandel"+dateFormat.format(date)+".png";
+            //String filename=Integer.toString(randomInt)+ "mandel.png";
+
+                String path = Environment.getExternalStorageDirectory().toString();
+                OutputStream fOut = null;
+                //   String fp=path+"/Pictures/";
+                File file = new File(path, fileName);
+                fOut = new FileOutputStream(file);
+
+                mv.frs.peek().bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+
+                MyMediaConnectorClient client = new MyMediaConnectorClient(file.getAbsolutePath());
+                MediaScannerConnection scanner = new MediaScannerConnection(mv.getContext(), client);
+                client.setScanner(scanner);
+                scanner.connect();
+
+                // MediaStore.Images.Media.insertImage(this.getContext().getContentResolver(), frs.peek().bm, filename , "");
+                //	   this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+                //	this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+                fOut.flush();
+                fOut.close();
+
+
+            Uri U = getUriForFile(getApplicationContext(), "com.projects.mandelbrotproject.fileprovider", file);
+
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            i.setType("application/xml");
+
+            i.putExtra(Intent.EXTRA_STREAM, U);
+            String titleExportDatas="Export this frame to ";
+            //startActivity(Intent.createChooser(i,titleExportDatas+fileName));
+            startActivityForResult(Intent.createChooser(i,titleExportDatas+fileName), 2);
+
+
+        }
+        catch(Exception e)
+        {
+            Log.i("ExceptionMenu", e.toString());
+
+        }
+        return true;
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            exportToFile((mandView)findViewById(R.id.mv));
+        }  else {
+            // Explain to the user that the feature is unavailable because
+            // the features requires a permission that the user has denied.
+            // At the same time, respect the user's decision. Don't link to
+            // system settings in an effort to convince the user to change
+            // their decision.
+        }
+
+    }
+
 
 @Override
 protected Dialog onCreateDialog(int id) {
@@ -200,4 +320,9 @@ protected Dialog onCreateDialog(int id) {
     }
     return null;
 	}
+
+
+
+
+
 }

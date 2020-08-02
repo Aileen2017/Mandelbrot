@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.projects.mandelbrotproject"
-
+        minSdkVersion 16
         targetSdkVersion 29
     }
 
@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:support-v4:18.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'junit:junit:4.13'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

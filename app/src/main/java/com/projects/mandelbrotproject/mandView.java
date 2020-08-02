@@ -1,16 +1,21 @@
 package com.projects.mandelbrotproject;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 import java.util.Stack;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -21,7 +26,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +39,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.graphics.drawable.Drawable;
 import android.graphics.Canvas;
+
+import static android.support.v4.content.FileProvider.getUriForFile;
 
 public class mandView extends View 
 
@@ -44,7 +54,7 @@ public class mandView extends View
 	private ProgressBar progressBar = null;
 	private boolean displayText = true;
 	private Menu menu;
-	private boolean clicked=false;
+	boolean clicked=false;
 	
 	
 	public mandView(Context context) 
@@ -113,47 +123,10 @@ public class mandView extends View
 	
 		}	
 	}
-	
-	public void save()
-	{
-		if(!clicked)
-		{
-			DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-			   //get current date time with Date()
-			   Date date = new Date();
-			   System.out.println(dateFormat.format(date));
-			   //Random randomGenerator = new Random();
-			//int randomInt = randomGenerator.nextInt(100);
-			 String filename="mandel"+dateFormat.format(date)+".png";
-			   //String filename=Integer.toString(randomInt)+ "mandel.png";
-	          try{
-	
-	        	   String path = Environment.getExternalStorageDirectory().toString();
-	        	   
-	        	   
-	        	   OutputStream fOut = null;
-	        	//   String fp=path+"/Pictures/";
-	        	   File file = new File(path, filename);
-	        	   fOut = new FileOutputStream(file);
-	
-	        	   frs.peek().bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
-	        	   
-	        	   MyMediaConnectorClient client = new MyMediaConnectorClient(file.getAbsolutePath());
-	   			MediaScannerConnection scanner = new MediaScannerConnection(this.getContext(), client);
-	   			client.setScanner(scanner);
-	   			scanner.connect();
-	        	   
-	        	  // MediaStore.Images.Media.insertImage(this.getContext().getContentResolver(), frs.peek().bm, filename , "");
-	        	//	   this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
-	        	   //	this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
-	        	   	fOut.flush();
-	        	   	fOut.close();
-	           }catch(Exception e)
-	           {
-	        	   e.printStackTrace();
-	           }
-		}
-	}
+
+
+
+
 	
 	
 	
