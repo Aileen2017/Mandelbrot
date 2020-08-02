@@ -209,7 +209,7 @@ public class MainActivity extends Activity {
         mv=(mandView)findViewById(R.id.mv);
         if(!mv.clicked)
         {
-            boolean createdFile=false;
+
             int REQUEST_CODE = 1;
             if (ContextCompat.checkSelfPermission(
                     this, Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
@@ -264,6 +264,7 @@ public class MainActivity extends Activity {
                 //	   this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
                 //	this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
                 fOut.flush();
+
                 fOut.close();
 
 
@@ -271,12 +272,13 @@ public class MainActivity extends Activity {
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            i.setType("application/xml");
+            i.setType("image/jpeg");
 
             i.putExtra(Intent.EXTRA_STREAM, U);
-            String titleExportDatas="Export this frame to ";
+            //String titleExportDatas="Export this frame to ";
             //startActivity(Intent.createChooser(i,titleExportDatas+fileName));
-            startActivityForResult(Intent.createChooser(i,titleExportDatas+fileName), 2);
+            //startActivityForResult(Intent.createChooser(i,titleExportDatas+fileName), 2);
+            startActivity(i);
 
 
         }
