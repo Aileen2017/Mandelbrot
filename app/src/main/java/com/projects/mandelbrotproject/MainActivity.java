@@ -57,13 +57,7 @@ public class MainActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-   //  View iv = (View) findViewById(R.id.imageV);
-       
         setContentView(R.layout.activity_main);
-      // LayoutInflater inflater = LayoutInflater.from(MainActivity.this); // 1
-     //  theInflatedView = inflater.inflate(R.layout.activity_main, null);
-     //  setContentView(theInflatedView);
        mv=(mandView)findViewById(R.id.mv);
      
        TextView tv=(TextView)this.findViewById(R.id.textView1);
@@ -78,25 +72,6 @@ public class MainActivity extends Activity {
        new DownloadTask().execute("Any parameters my download task needs here");
   
        
-     //  getActionBar().hide();
-    //   setProgressBarIndeterminate(true);
-      // setProgressBarIndeterminateVisibility(true);
-      // MenuItem mv3 = menu.findItem(R.id.item3);
-       
-    //   mv3.setVisible(false);
-     //  MenuItem mv4 = menu.findItem(R.id.item4);
-      // mv4.setVisible(false);
-      // invalidateOptionsMenu();
-     //  closeOptionsMenu();
-       
-      //tv.append(Double.toString( mv.frs.peek().centreX));
-      // mv.paint.setColor(Color.CYAN);
-     //  mandView mv = new mandView(this);
-      // setContentView(mv);
-       /*
-       mandView mv = new mandView(this);
-       mv.setBackgroundColor(Color.WHITE);
-       setContentView(mv);*/
     }
     
     @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
@@ -127,68 +102,34 @@ public class MainActivity extends Activity {
    }    
     
 
-    @TargetApi(11)
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.activity_main, menu);
     	MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
-        
-    //   MenuItem mv3 = menu.findItem(R.id.item3);
-      //  mv3.setVisible(false);
-       /* MenuItem mv4 = menu.findItem(R.id.item4);
-        mv4.setVisible(false);*/
-        //invalidateOptionsMenu();
-      //  closeOptionsMenu();
+
         return true;
        
     }
-    @Override
-   /* public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-      //  openOptionsMenu();
-      //  closeOptionsMenu();
-    }*/
-    
-   /* public boolean onPrepareOptionsMenu(Menu menu) {
-    	Timer timing = new Timer();
-    	        timing.schedule(new TimerTask() {
-    		 
-    		          
-    		            @Override
-    		            public void run() {
-    		                closeOptionsMenu();
-    		            }
-    		        }, 10000);
-    		        return super.onPrepareOptionsMenu(menu);
-    	
-    }
-    */
+
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
         switch (item.getItemId()) {
         case R.id.item1:
         	{	
         		
-        			//TextView tv=(TextView)this.findViewById(R.id.textView1);
-        			//tv.append("clicked");
+
         			mandView mv=(mandView)this.findViewById(R.id.mv);
-        		//	mv.setTextBox(tv);
-        			//tv.append(Double.toString(mv.frs.peek().centreX));
+
         			mv.back();
         			return true;
         		
         	}
         case R.id.item2:
         	{
-        		//mandView mv=(mandView)this.findViewById(R.id.mv);
         		
         		save();
-        		
 
         		Toast msg = Toast.makeText(this, "This image has been saved.", Toast.LENGTH_SHORT);
-
-        		//msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
 
         		msg.show();
         		return true;
@@ -260,9 +201,6 @@ public class MainActivity extends Activity {
                 client.setScanner(scanner);
                 scanner.connect();
 
-                // MediaStore.Images.Media.insertImage(this.getContext().getContentResolver(), frs.peek().bm, filename , "");
-                //	   this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
-                //	this.getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
                 fOut.flush();
 
                 fOut.close();
@@ -275,9 +213,6 @@ public class MainActivity extends Activity {
             i.setType("image/jpeg");
 
             i.putExtra(Intent.EXTRA_STREAM, U);
-            //String titleExportDatas="Export this frame to ";
-            //startActivity(Intent.createChooser(i,titleExportDatas+fileName));
-            //startActivityForResult(Intent.createChooser(i,titleExportDatas+fileName), 2);
             startActivity(i);
 
 
