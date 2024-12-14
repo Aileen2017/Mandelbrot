@@ -1,4 +1,4 @@
-package com.projects.mandelbrotproject;
+package com.projects.mandelbrotproject2;
 
 import android.graphics.Color;
 

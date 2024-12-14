@@ -1,4 +1,4 @@
-package com.projects.mandelbrotproject;
+package com.projects.mandelbrotproject2;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -6,10 +6,6 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.projects.mandelbrotproject.R;
 
 import android.Manifest;
 import android.content.Intent;
@@ -18,8 +14,8 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.*;
 
@@ -29,19 +25,13 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.view.Menu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.graphics.Color;
 
-import static android.support.v4.content.FileProvider.getUriForFile;
+import static androidx.core.content.FileProvider.getUriForFile;
 
 
 public class MainActivity extends Activity {
@@ -74,7 +64,7 @@ public class MainActivity extends Activity {
        
     }
     
-    @android.support.annotation.RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
+    @androidx.annotation.RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     private class DownloadTask extends AsyncTask<String, Void, Object> {
        
     	protected Object doInBackground(String... args) {
@@ -206,7 +196,7 @@ public class MainActivity extends Activity {
                 fOut.close();
 
 
-            Uri U = getUriForFile(getApplicationContext(), "com.projects.mandelbrotproject.fileprovider", file);
+            Uri U = getUriForFile(getApplicationContext(), "com.projects.mandelbrotproject2.fileprovider", file);
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

@@ -1,13 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion 34
+    buildToolsVersion '34.0.0'
 
     defaultConfig {
-        applicationId "com.projects.mandelbrotproject"
-        minSdkVersion 16
-        targetSdkVersion 29
+        applicationId "com.projects.mandelbrotproject2"
+        minSdkVersion 19
+        targetSdkVersion 34
+        versionCode 6
+        versionName "1.6"
+
     }
 
     buildTypes {
@@ -16,12 +19,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    namespace 'com.projects.mandelbrotproject2'
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'junit:junit:4.13'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation "androidx.test.ext:junit:1.1.3"
+    androidTestImplementation "androidx.fragment:fragment-testing:1.4.1"
+    androidTestImplementation "androidx.test:core:1.4.0"
+
 }
