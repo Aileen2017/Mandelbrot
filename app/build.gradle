@@ -8,8 +8,8 @@ android {
         applicationId "com.projects.mandelbrotproject2"
         minSdkVersion 19
         targetSdkVersion 36
-        versionCode 7
-        versionName "1.7"
+        versionCode 8
+        versionName "1.8"
 
     }
 
