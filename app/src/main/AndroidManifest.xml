@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="6"
-    android:versionName="1.6" >
+    android:versionCode="7"
+    android:versionName="1.7" >
 
-    <uses-sdk android:targetSdkVersion="34" />
+    <uses-sdk android:targetSdkVersion="36" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="com.example.permission.RECEIVE_MY_BROADCAST" />
 

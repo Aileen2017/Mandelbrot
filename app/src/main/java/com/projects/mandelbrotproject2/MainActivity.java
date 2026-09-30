@@ -2,18 +2,22 @@ package com.projects.mandelbrotproject2;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.MediaStore;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
@@ -140,6 +144,11 @@ public class MainActivity extends Activity {
         mv=(mandView)findViewById(R.id.mv);
         if(!mv.clicked)
         {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // MediaStore inserts need no runtime permission on API 29+.
+                exportToFile(mv);
+                return;
+            }
 
             int REQUEST_CODE = 1;
             if (ContextCompat.checkSelfPermission(
@@ -168,21 +177,33 @@ public class MainActivity extends Activity {
     private boolean exportToFile(mandView mv) {
         try
         {
-
             DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-            //get current date time with Date()
             Date date = new Date();
-            System.out.println(dateFormat.format(date));
-            //Random randomGenerator = new Random();
-            //int randomInt = randomGenerator.nextInt(100);
-            String fileName="mandel"+dateFormat.format(date)+".png";
-            //String filename=Integer.toString(randomInt)+ "mandel.png";
+            String fileName = "mandel" + dateFormat.format(date) + ".png";
 
+            Uri savedUri;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Scoped storage: insert via MediaStore, no raw file path, no permission needed.
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES);
+
+                ContentResolver resolver = getContentResolver();
+                savedUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                if (savedUri == null) {
+                    throw new IOException("MediaStore insert failed");
+                }
+                OutputStream fOut = resolver.openOutputStream(savedUri);
+                mv.frs.peek().bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+                fOut.flush();
+                fOut.close();
+                // No MediaScannerConnection needed: MediaStore inserts are already indexed.
+            } else {
                 String path = Environment.getExternalStorageDirectory().toString();
-                OutputStream fOut = null;
-                //   String fp=path+"/Pictures/";
                 File file = new File(path, fileName);
-                fOut = new FileOutputStream(file);
+                FileOutputStream fOut = new FileOutputStream(file);
 
                 mv.frs.peek().bm.compress(Bitmap.CompressFormat.PNG, 85, fOut);
 
@@ -192,17 +213,16 @@ public class MainActivity extends Activity {
                 scanner.connect();
 
                 fOut.flush();
-
                 fOut.close();
 
-
-            Uri U = getUriForFile(getApplicationContext(), "com.projects.mandelbrotproject2.fileprovider", file);
+                savedUri = getUriForFile(getApplicationContext(), "com.projects.mandelbrotproject2.fileprovider", file);
+            }
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            i.setType("image/jpeg");
+            i.setType("image/png");
 
-            i.putExtra(Intent.EXTRA_STREAM, U);
+            i.putExtra(Intent.EXTRA_STREAM, savedUri);
             startActivity(i);
 
 
